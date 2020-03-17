@@ -1,7 +1,29 @@
-import React, { useState, useRef, useReducer } from "react";
+import React, { useState, useRef } from "react";
 import "./App.css";
 
+const highScore = [
+  { name: "XXX", score: 12 },
+  { name: "AAA", score: 1 },
+  { name: "SSS", score: 17 },
+  { name: "DDD", score: 4 },
+  { name: "TTT", score: 6 }
+];
+
+function compare(a, b) {
+  let comparison = 0;
+  if (a.score < b.score) {
+    comparison = 1;
+  } else if (a.score > b.score) {
+    comparison = -1;
+  }
+  return comparison;
+}
+
+highScore.sort(compare);
+console.log(highScore);
+
 function App() {
+  const [name, setName] = useState("");
   const [menu, setMenu] = useState(true);
   const [y, setY] = useState("");
   const [x, setX] = useState("");
@@ -20,7 +42,7 @@ function App() {
   console.log(menu);
   let timer;
   const gameLoop = () => {
-    console.log(livesRef.current)
+    console.log(livesRef.current);
     const checkLives = () =>
       targetRef.current === true ? setLives(livesRef.current - 1) : null;
     checkLives();
@@ -46,6 +68,11 @@ function App() {
     }
   };
 
+  const handleEndGame = () => {
+    setMenu(true);
+    setLives(3);
+  };
+
   const handleClickShot = () => {
     setScore(score + 1);
     setTarget(false);
@@ -57,12 +84,30 @@ function App() {
     gameLoop();
   };
 
+  const handleSubmit = e => {
+    e.preventDefault();
+    highScore.push({ name: name, score: score });
+    highScore.sort(compare);
+    highScore.splice(5);
+    setMenu(true);
+    setLives(3);
+  };
+
   return (
     <div className="gameScreen">
       {menu ? (
         <div className="menuWrapper">
-          <p className="menu" onClick={handleClickStart}>START</p>
-          <p className="menu">HIGH SCORE</p>
+          <p className="menu" onClick={handleClickStart}>
+            START
+          </p>
+          <ul className="ingred">
+            HALL OF FAME
+            {highScore.map((highScore, i) => (
+              <li key={i}>
+                {highScore.name}: {highScore.score}
+              </li>
+            ))}
+          </ul>
         </div>
       ) : (
         <div>
@@ -77,10 +122,33 @@ function App() {
           <p className="lives">LIVES: {lives}</p>
         </div>
       )}
-      {lives <= 0 ? <div><p className="lose" >YOU LOSE!</p><p className="menu" onClick={() => {setMenu(true); setLives(3);}}> MENU</p></div> : null}
+      {lives <= 0 ? (
+        <div>
+          {score > highScore[4].score ? (
+            <form onSubmit={handleSubmit}>
+              <input
+                placeholder="ENTER YOUR NAME"
+                onChange={
+                  (e => {
+                    setName(e.target.value);
+                  })
+                }
+              ></input>
+              <button type="submit">SUBMIT</button>
+              <p className="lose">NEW HIGH SCORE!</p>
+            </form>
+          ) : (
+            <>
+              <p className="lose">YOU LOSE!</p>
+              <p className="menu" onClick={handleEndGame}>
+                MENU
+              </p>
+            </>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }
 
 export default React.memo(App);
- 
