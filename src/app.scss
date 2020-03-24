@@ -1,7 +1,61 @@
+$gradient-dark: rgb(156, 163, 163);
+$gradient-light: rgb(216, 221, 221);
+$button-shadow: rgb(56, 75, 75);
+
+@font-face {
+  font-family: "game-font";
+  src: url("SpaceMono-Regular.ttf");
+}
+@font-face {
+  font-family: "game-font-bold";
+  src: url("SpaceMono-Bold.ttf");
+}
+
+@mixin button {
+  box-shadow: inset $button-shadow;
+  background: linear-gradient(
+    to bottom,
+    $gradient-dark 5%,
+    $gradient-light 100%
+  );
+  background-color: $gradient-dark;
+  border-radius: 3px;
+  border: 1px solid $button-shadow;
+  font-size: 46px;
+  display: inline-block;
+  cursor: pointer;
+  color: black;
+  padding: 2px 20px;
+  text-decoration: none;
+
+  &:hover {
+    color: rgb(231, 238, 243);
+    background: linear-gradient(
+      to bottom,
+      $gradient-light 5%,
+      $gradient-dark 100%
+    );
+    background-color: $gradient-light;
+  }
+  &:active {
+    position: relative;
+  }
+}
+
 * {
+  font-family: "game-font";
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+.lifeLost {
+  height: 500px;
+  width: 900px;
+  background-color: rgba(255, 0, 0, 0.253);
+  position: absolute;
+  pointer-events: none;
+  z-index: 1000;
 }
 
 .gameScreen {
@@ -9,35 +63,85 @@
   width: 900px;
   background-color: rgb(169, 190, 190);
   cursor: url("target.png") 15 15, auto;
-}
 
-.menuWrapper {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+  .nav {
+    position: relative;
+    left: 40px;
+    top: 15%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 300px;
 
-.menu {
-  line-height: 100px;
-  text-align: center;
-  font-size: 46px;
-  font-weight: bold;
-  &:hover {
-    color: white;
+    .start {
+      font-family: "game-font-bold";
+      text-align: center;
+      font-weight: bold;
+      @include button;
+      &:nth-child(2):hover + .tip {
+        display: block;
+      }
+      &:nth-child(4):hover + .highScore {
+        display: block;
+      }
+    }
   }
-}
 
-.lose {
-  line-height: 200px;
-  text-align: center;
-  font-size: 66px;
-  font-weight: bold;
+  h3 {
+    position: absolute;
+    top: 56px;
+    left: 520px;
+    font-size: 36px;
+    text-align: center;
+    font-family: "game-font-bold";
+    @include button;
+  }
+
+  .tip {
+    display: none;
+    position: absolute;
+    font-size: 24px;
+    text-align: center;
+    width: 400px;
+    left: 390px;
+  }
+
+  .highScore {
+    display: none;
+    font-family: "game-font-bold";
+    position: absolute;
+    width: 380px;
+    left: 380px;
+    top: 50%;
+    transform: translate(0%, -50%);
+    font-size: 48px;
+    list-style: none;
+    text-align: center;
+
+    li {
+      font-size: 32px;
+      line-height: 46px;
+      text-align: right;
+      .Hscore-mid {
+        position: absolute;
+        left: 60%;
+      }
+      .Hscore-left {
+        position: relative;
+        right: 39%;
+      }
+      .Hscore-right {
+        position: absolute;
+        left: 68%;
+      }
+    }
+  }
 }
 
 .target {
   position: absolute;
+  z-index: 10;
   height: 40px;
   width: 40px;
   background-image: repeating-radial-gradient(
@@ -56,14 +160,54 @@
 
 .score {
   position: absolute;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: bold;
-  left: 130px;
+  left: 140px;
 }
 
 .lives {
   position: absolute;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: bold;
   left: 10px;
+}
+
+.lose {
+  position: relative;
+  line-height: 180px;
+  top: 40px;
+  text-align: center;
+  font-size: 66px;
+  font-weight: bold;
+}
+
+.menu {
+  position: relative;
+  top: 30px;
+  left: 50%;
+  transform: translate(-50%);
+  @include button;
+}
+
+form {
+  position: absolute;
+  top: 0;
+  width: 900px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  input {
+    margin-top: 40px;
+    position: relative;
+    width: 300px;
+    height: 48px;
+    font-size: 32px;
+  }
+  button {
+    @include button;
+    margin-top: 10px;
+    font-size: 36px;
+  }
 }
