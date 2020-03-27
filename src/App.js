@@ -55,7 +55,6 @@ function App() {
     setX(Math.floor(Math.random() * 860));
     setTimeout(() => setLifeLost(false), 200);
     setTarget(true);
-    console.log(scoreRef.current)
     if (scoreRef.current < 5 && livesRef.current > 0) {
       timer = setTimeout(gameLoop, 3000);
     } else if (scoreRef.current < 10 && livesRef.current > 0) {
@@ -101,18 +100,15 @@ function App() {
     setMenu(true);
     setLives(3);
     setScore(0);
-    (async () => {
-      const rawResponse = await fetch("express_backend", {
-        method: "POST",
-        headers: {
-
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(highScore)
-      });
-      const content = await rawResponse.json();
-      console.log(content);
-    })();
+    fetch("/express_backend", {
+      method: "POST",
+      body: JSON.stringify(highScore),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.json())
+      .then(res => console.log(res));
   };
 
   return (
@@ -126,7 +122,8 @@ function App() {
             <li className="start">GUIDE</li>
             <p className="tip">
               Shoot as many targets as possible.<br></br>
-              Not shooting the target before another one appears = life lost.<br></br>
+              Not shooting the target before another one appears = life lost.
+              <br></br>
               The speed will increase when your score reaches 5/10/15/20/30.
               <br></br>
               <b>Good Luck!</b>

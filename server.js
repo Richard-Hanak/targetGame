@@ -1,19 +1,23 @@
 const express = require("express");
 const fs = require("fs");
+
 const app = express();
 const port = process.env.PORT || 8080;
-const path = require('path')
+const path = require("path");
 
-app.use(express.static(path.join(__dirname, 'build')))
+app.use(express.static(path.join(__dirname, "build")));
+app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'))
-})
+app.listen(port, () => console.log(`Listening on port ${port}`));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 const writeFile = newData => {
   const stringifiedData = JSON.stringify(newData);
 
-  fs.writeFile("src/highScore.json", stringifiedData, error => {
+  fs.writeFile("public/highScore.json", stringifiedData, error => {
     if (error) {
       console.log("Write: NOT successful!");
       console.log(error);
@@ -23,10 +27,8 @@ const writeFile = newData => {
   });
 };
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
-
 app.get("/express_backend", (req, res) => {
-  let rawdata = fs.readFileSync("src/highScore.json");
+  let rawdata = fs.readFileSync("public/highScore.json");
   let highScore = JSON.parse(rawdata);
   console.log(highScore);
   res.send(highScore);
