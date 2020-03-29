@@ -137,6 +137,18 @@ $button-shadow: rgb(56, 75, 75);
       }
     }
   }
+  .countDown {
+    display: block;
+    top: 0;
+    line-height: 500px;
+    width: 900px;
+    font-size: 70px;
+    background-color: rgb(169, 190, 190);
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    text-align: center;
+  }
 }
 
 .target {

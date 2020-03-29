@@ -16,8 +16,13 @@ function App() {
   const [name, setName] = useState("");
   const [menu, setMenu] = useState(true);
   const [lifeLost, setLifeLost] = useState(false);
+  const [showCountDown, setShowCountDown] = useState(false);
   const [y, setY] = useState("");
   const [x, setX] = useState("");
+
+  const [countDown, setCountDown] = useState(4);
+  const countDownRef = useRef(countDown);
+  countDownRef.current = countDown;
 
   const [target, setTarget] = useState(false);
   const targetRef = useRef(target);
@@ -44,8 +49,8 @@ function App() {
     callBackendAPI();
   }, []);
 
-  let timer;
   const gameLoop = () => {
+    let timer;
     const checkLives = () =>
       targetRef.current === true
         ? (setLives(livesRef.current - 1), setLifeLost(true))
@@ -88,8 +93,19 @@ function App() {
   };
 
   const handleClickStart = () => {
+    setShowCountDown(true);
     setMenu(false);
-    gameLoop();
+    const renderCountDown = () => {
+      setCountDown(countDownRef.current - 1);
+      if (countDownRef.current > 0) {
+        setTimeout(renderCountDown, 1000);
+      } else {
+        setShowCountDown(false);
+        gameLoop();
+        setCountDown(4);
+      }
+    };
+    renderCountDown();
   };
 
   const handleSubmit = e => {
@@ -156,6 +172,7 @@ function App() {
           </div>
         </>
       )}
+      {showCountDown ? <h1 className="countDown">{countDown}</h1> : null}
       {lives <= 0 ? (
         <div>
           {score > highScore[4].score ? (
